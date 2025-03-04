@@ -1,5 +1,6 @@
 # S2MAT
 S2MAT: Simultaneous and Self-Reinforced Mapping and Tracking in Dynamic Urban Scenarios
+
 [Project Page](https://sites.google.com/view/smat-nav/home)
 
 ## TODO List
