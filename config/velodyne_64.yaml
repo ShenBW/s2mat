@@ -1,0 +1,17 @@
+{
+is_ring_available: false, 
+
+scan_frequency: 10,
+
+# For ERASOR 00, 02, 05, 07
+# lidar_frequency: 5,
+
+lidar_vfov: 26.87, 
+lidar_vfov_upper: 2.0, 
+lidar_vfov_lower: -24.87, 
+
+lidar_hfov: 360.0, 
+lidar_lines: 64, 
+lidar_hresolution: 2150, 
+
+}

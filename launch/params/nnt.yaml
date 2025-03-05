@@ -1,0 +1,42 @@
+{
+min_distance_for_low_confidence_observations_to_tracks: 0.5, 
+min_num_matches_to_allow_low_confidence_match: 10, 
+max_consecutive_low_confidence_matches: 60, 
+max_timestamp_difference_for_missed_observation_recovery: 0.07, 
+# Publisher and subscriber queue lengths
+queue_size: 1, 
+# Gating
+max_gating_distance: 1.0, 
+max_vol_diff: 5.0, 
+use_correlation_log: false, 
+
+data_association_type: "greedy_nearest_neighbor", 
+
+# History of track states for duplicate elimination and debugging
+state_history_length: 10, 
+
+# Duplicate track elimination
+duplicate_track_num_history_entries_to_compare: 5, 
+duplicate_track_num_history_entries_must_match: 3, 
+duplicate_track_max_dist: 0.15, 
+
+use_initiation_logic: "", 
+
+# Override measurement noise values from detectors
+overwrite_measurement_noise: true, 
+measurement_noise: 0.05, 
+
+logic_initiator_high_confidence_modalities: "", 
+published_track_forward_predict_time: 0.0, 
+
+#Basic occlusion manager parameters
+
+#Number of updtates to classify track as mature track
+track_is_mature_after_total_num_matches: 30,
+#Number of consecutive occlusion before a mature track should be deleted
+max_occlusions_before_deletion_of_mature_track: 10,
+#Number of consecutive occlusion before a non-mature track should be deleted
+max_occlusions_before_deletion: 10,
+#To be sure deactivate other occlusion managers
+use_laser_shade_occlusion_manager: false,
+}

@@ -1,0 +1,17 @@
+{
+is_ring_available: true, 
+# 1 for ouster LiDAR, 2 for velodyne LiDAR
+lidar_type: 1, 
+
+scan_frequency: 20,
+
+lidar_vfov: 45.0, 
+lidar_vfov_upper: 22.5, 
+lidar_vfov_lower: -22.5, 
+
+lidar_hfov: 360.0, 
+lidar_lines: 32, 
+lidar_hresolution: 1024, 
+
+blind: 0.3, 
+}
