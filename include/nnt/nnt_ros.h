@@ -9,7 +9,7 @@
 
 #include <boost/circular_buffer.hpp>
 
-#include <smat/TrackedObjects.h>
+#include <s2mat/TrackedObjects.h>
 #include <jsk_recognition_msgs/BoundingBoxArray.h>
 
 #include <std_msgs/Float32.h>

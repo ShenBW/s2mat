@@ -410,7 +410,7 @@ bool isPointInVFOV(const SphericalPoint& sph_point, float vfov_upper, float vfov
 }
 
 cv::Mat pointcloudToRimg(const PointCloudPtr& pointcloud, std::pair<int, int> image_size, float vfov_upper,
-                         float vfov_lower, float hfov, int omp_cores)
+                         float vfov_lower, float hfov)
 {
   const int row_size = image_size.first;
   const int col_size = image_size.second;
@@ -419,7 +419,7 @@ cv::Mat pointcloudToRimg(const PointCloudPtr& pointcloud, std::pair<int, int> im
 
   int num_points = pointcloud->points.size();
 
-#pragma omp parallel for num_threads(omp_cores)
+// #pragma omp parallel for num_threads(omp_cores)
   for (int idx = 0; idx < num_points; ++idx)
   {
     PointType point = pointcloud->points[idx];

@@ -3,9 +3,9 @@
 
 #include "utils.h"
 
-#include <smat/TrackedObjects.h>
+#include <s2mat/TrackedObjects.h>
 
-namespace smat
+namespace s2mat
 {
 class TracksProcessor
 {
@@ -26,5 +26,5 @@ public:
                      const std::vector<TrackedObjects>& submaps_object, std::unordered_set<int>& success_tracking_traj);
 };
 
-}  // namespace smat
+}  // namespace s2mat
 #endif

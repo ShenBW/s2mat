@@ -3,7 +3,7 @@
 
 #include "utils.h"
 
-namespace smat
+namespace s2mat
 {
 // ascending sort
 class RimgCluster
@@ -38,7 +38,6 @@ public:
 
   bool judgmentCondition(const PointCloudPtr& pointcloud, int idx, int idx_neighbor, float threshold);
 
-  int omp_cores_;
   int lidar_lines_;
   int lidar_hresolution_;
   int cluster_size_;
@@ -50,6 +49,6 @@ public:
 
   bool consider_max_depth_;
 };
-}  // namespace smat
+}  // namespace s2mat
 
 #endif

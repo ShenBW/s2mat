@@ -1,6 +1,6 @@
 #include "map_merger/map_merger.h"
 
-namespace smat
+namespace s2mat
 {
 MapMerger::MapMerger(ros::NodeHandle nh)
   : nh_(nh), scans_count_(0), curr_scans_num_(0), curr_submap_id_(0), local_radius_(1000.0), output_local_(false)
@@ -16,8 +16,8 @@ MapMerger::MapMerger(ros::NodeHandle nh)
   req_point_pub_ = nh_.advertise<geometry_msgs::PointStamped>("/clicked_point", 1);
   static_map_pub_ = nh_.advertise<sensor_msgs::PointCloud2>("static_map", 1);
 
-  preprocess_scan_sub_ = nh_.subscribe<smat::Submap>("/preprocess_scan", 1, &MapMerger::staticScanCallback, this);
-  static_submap_sub_ = nh_.subscribe<smat::Submap>("/static_submap", 1, &MapMerger::staticSubmapCallback, this);
+  preprocess_scan_sub_ = nh_.subscribe<s2mat::Submap>("/preprocess_scan", 1, &MapMerger::staticScanCallback, this);
+  static_submap_sub_ = nh_.subscribe<s2mat::Submap>("/static_submap", 1, &MapMerger::staticSubmapCallback, this);
   save_sub_ = nh_.subscribe<std_msgs::Empty>("/save_static_map", 1, &MapMerger::saveCallback, this);
 }
 
@@ -31,7 +31,6 @@ void MapMerger::readParameters()
   nh_.param<std::string>("output_static_map_path", output_static_map_path_, "/home");
 
   nh_.param<int>("scan_frequency", scan_frequency_, 10);
-  nh_.param<int>("omp_cores", omp_cores_, 4);
   nh_.param<int>("lidar_lines", image_size_.first, 32);
   nh_.param<int>("image_width", image_size_.second, 360);
 
@@ -51,7 +50,7 @@ void MapMerger::getGlobalScanPos(const PointType& scan_pos)
   scan_pos_ = scan_pos;
 }
 
-void MapMerger::staticScanCallback(const smat::Submap::ConstPtr& scan_msg)
+void MapMerger::staticScanCallback(const s2mat::Submap::ConstPtr& scan_msg)
 {
   double start_time = ros::Time::now().toSec();
   scans_count_ += 1;
@@ -135,7 +134,7 @@ void MapMerger::staticScanCallback(const smat::Submap::ConstPtr& scan_msg)
   ROS_INFO_STREAM("[preprocess scan subscribe]: process time: " << ros::Time::now().toSec() - start_time);
 }
 
-void MapMerger::staticSubmapCallback(const smat::Submap::ConstPtr& submap_msg)
+void MapMerger::staticSubmapCallback(const s2mat::Submap::ConstPtr& submap_msg)
 {
   double start_time = ros::Time::now().toSec();
 
@@ -149,8 +148,7 @@ void MapMerger::staticSubmapCallback(const smat::Submap::ConstPtr& submap_msg)
   const float vfov_upper = vfov_upper_;
   const float vfov_lower = vfov_lower_;
   const float hfov = hfov_;
-  const int omp_cores = omp_cores_;
-  cv::Mat submap_rimg = pointcloudToRimg(submap_local, image_size, vfov_upper, vfov_lower, hfov, omp_cores);
+  cv::Mat submap_rimg = pointcloudToRimg(submap_local, image_size, vfov_upper, vfov_lower, hfov);
 
   PointType submap_pos;
   submap_pos.x = submap_msg->pose.position.x;
@@ -334,7 +332,6 @@ void MapMerger::incrementalMerge(std::vector<int>& submaps_id,
 
   // remove dynamic points in the occupied map
   std::vector<struct Cell> erase_list;
-#pragma omp parallel for num_threads(omp_cores_)
   for (auto it = occupied_map_.begin(); it != occupied_map_.end(); ++it)
   {
     auto cell = it->first;
@@ -377,7 +374,6 @@ void MapMerger::incrementalMerge(std::vector<int>& submaps_id,
     auto occ_cells = occ_cells_vector[i];
 
     // update occupied map by new observations
-#pragma omp parallel for num_threads(omp_cores_)
     for (auto it = occ_cells.begin(); it != occ_cells.end(); ++it)
     {
       auto cell = *it;
@@ -411,8 +407,7 @@ void MapMerger::publishStaticMap(const PointType& scan_pos)
 {
   PointCloudPtr static_map(new PointCloud());
   std::vector<struct Cell> erase_list;
-
-#pragma omp parallel for num_threads(omp_cores_)
+  
   for (auto it = occupied_map_.begin(); it != occupied_map_.end(); ++it)
   {
     auto cell = it->first;
@@ -489,4 +484,4 @@ void MapMerger::saveCallback(const std_msgs::EmptyConstPtr& msg)
   }
 }
 
-}  // namespace smat
+}  // namespace s2mat

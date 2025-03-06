@@ -6,39 +6,38 @@
     <arg name="image_width" default="360"/>
 
     <arg name="voxel_size" default="0.2"/>
+    <!-- <arg name="scan_radius" default="4.0"/> -->
     <arg name="scan_radius" default="4.0"/>
 
     <arg name="use_imm" default="true"/>
     
-    <node name="front_end_node" pkg="smat" type="rimg_front_end_node">
+    <node name="front_end_node" pkg="s2mat" type="rimg_front_end_node">
         <param name="local_frame" value="$(arg local_frame)"/>
         <param name="global_frame" value="$(arg global_frame)"/>
 
-        <param name="omp_cores" value="$(arg omp_cores)"/>
-        
         <param name="voxel_size" value="$(arg voxel_size)"/>
         <param name="sensor_height" value="0.4"/>
         <param name="cluster_size" value="10"/>
         <param name="max_depth" value="15.0"/>
 
         <!-- lidar param -->
-        <rosparam file="$(find smat)/config/lidar_sim.yaml" command="load"/>
+        <rosparam file="$(find s2mat)/config/lidar_sim.yaml" command="load"/>
 
         <!-- Track param -->
-        <rosparam file="$(find smat)/launch/params/nnt.yaml" command="load" />
+        <rosparam file="$(find s2mat)/launch/params/nnt.yaml" command="load" />
 
         <!-- General IMM filter parameters -->
-        <rosparam file="$(find smat)/launch/params/imm_CT_CV.yaml" command="load" if="$(arg use_imm)"/>
+        <rosparam file="$(find s2mat)/launch/params/imm_CT_CV.yaml" command="load" if="$(arg use_imm)"/>
         
         <!-- Default Kalman filter parameters -->
-        <rosparam file="$(find smat)/launch/params/ekf_default.yaml" command="load"/>
+        <rosparam file="$(find s2mat)/launch/params/ekf_default.yaml" command="load"/>
         
         <remap from="/points" to= "/os_cloud_node/points"/>
         <remap from="/init_map" to="/Laser_map"/>
         <remap from="/static_map" to="/map_merge_node/static_map"/>
     </node>
 
-    <node name="back_end_node" pkg="smat" type="voi_back_end_node" output='screen'>
+    <node name="back_end_node" pkg="s2mat" type="voi_back_end_node" output='screen'>
         <param name="local_frame" value="$(arg local_frame)"/>
         <param name="global_frame" value="$(arg global_frame)"/>
         <param name="voxel_size" value="$(arg voxel_size)"/>
@@ -50,20 +49,19 @@
         <param name="omp_cores" value="$(arg omp_cores)"/>
         <param name="image_width" value="$(arg image_width)"/>
 
-        <rosparam file="$(find smat)/config/lidar_sim.yaml" command="load"/>
+        <rosparam file="$(find s2mat)/config/lidar_sim.yaml" command="load"/>
     </node>
 
-    <node name="map_merge_node" pkg="smat" type="map_merger_node">
+    <node name="map_merge_node" pkg="s2mat" type="map_merger_node">
         <param name="global_frame" value="$(arg global_frame)"/>
         <param name="output_static_map_path" value="/home/bwshen"/>
 
-        <param name="omp_cores" value="$(arg omp_cores)"/>
         <param name="image_width" value="$(arg image_width)"/>
 
-        <param name="merge_dist" value="$(arg scan_radius)"/>
+        <param name="merge_dist" value="3.0"/>
         <param name="voxel_size" value="$(arg voxel_size)"/>
 
-        <rosparam file="$(find smat)/config/lidar_sim.yaml" command="load"/>
+        <rosparam file="$(find s2mat)/config/lidar_sim.yaml" command="load"/>
     </node>
 
 </launch>

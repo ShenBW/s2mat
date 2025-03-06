@@ -1,6 +1,6 @@
 #include "front_end/rimg_front_end.h"
 
-namespace smat
+namespace s2mat
 {
 RimgFrontEnd::RimgFrontEnd(ros::NodeHandle nh)
   : nh_(nh)
@@ -21,7 +21,7 @@ RimgFrontEnd::RimgFrontEnd(ros::NodeHandle nh)
 
   compare_map_pub_ = nh_.advertise<sensor_msgs::PointCloud2>("compare_map", 1);
   static_scan_pub_ = nh_.advertise<sensor_msgs::PointCloud2>("static_scan", 1);
-  preprocess_scan_pub_ = nh_.advertise<smat::Submap>("/preprocess_scan", 1);
+  preprocess_scan_pub_ = nh_.advertise<s2mat::Submap>("/preprocess_scan", 1);
   tracking_pub_ = nh_.advertise<BoundingBoxArray>("tracking", 1);
   traj_pub_ = nh_.advertise<visualization_msgs::MarkerArray>("trajectories", 1);
 
@@ -39,14 +39,12 @@ bool RimgFrontEnd::readParameters()
 {
   nh_.param<std::string>("local_frame", local_frame_, "base_link");
   nh_.param<std::string>("global_frame", global_frame_, "odom");
-  nh_.param<int>("omp_cores", omp_cores_, 4);
   nh_.param<int>("scan_frequency", scan_frequency_, 10);
   max_num_ = std::round(2 * scan_frequency_);
 
   nh_.param<float>("max_depth", max_depth_, 25.0);
   nh_.param<float>("voxel_size", voxel_size_, 0.1);
 
-  preprocessor_->omp_cores_ = omp_cores_;
   nh_.param<int>("lidar_type", preprocessor_->lidar_type_, 1);
   nh_.param<int>("lidar_lines", preprocessor_->lidar_lines_, 32);
   nh_.param<int>("lidar_hresolution", preprocessor_->lidar_hresolution_, 1024);
@@ -58,7 +56,6 @@ bool RimgFrontEnd::readParameters()
 
   object_detector_->voxel_size_ = voxel_size_;
 
-  object_detector_->cluster_->omp_cores_ = omp_cores_;
   object_detector_->cluster_->lidar_lines_ = preprocessor_->lidar_lines_;
   object_detector_->cluster_->lidar_hresolution_ = preprocessor_->lidar_hresolution_;
   object_detector_->cluster_->hfov_ = preprocessor_->hfov_;
@@ -112,7 +109,6 @@ void RimgFrontEnd::cropMapGlobal(const PointCloudPtr& map_crop, const geometry_m
 
   int point_size = map_local->points.size();
 
-#pragma omp parallel for num_threads(omp_cores_)
   for (int i = 0; i < point_size; i++)
   {
     auto point = map_local->points[i];
@@ -278,7 +274,7 @@ void RimgFrontEnd::publishPreprocessScan(const PointCloudPtr& preprocess_scan, c
   sensor_msgs::PointCloud2 pointcloud_msg;
   pcl::toROSMsg(*preprocess_scan, pointcloud_msg);
 
-  smat::Submap scan_msg;
+  s2mat::Submap scan_msg;
   scan_msg.pointcloud = pointcloud_msg;
   scan_msg.pose = pose;
   preprocess_scan_pub_.publish(scan_msg);
@@ -603,4 +599,4 @@ void RimgFrontEnd::run()
     r.sleep();
   }
 }
-}  // namespace smat
+}  // namespace s2mat

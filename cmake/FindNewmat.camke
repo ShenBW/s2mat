@@ -1,0 +1,21 @@
+find_path(NEWMAT_INCLUDE_DIR
+  NAMES newmat.h
+  PATHS /usr/include /usr/local/include
+)
+
+find_library(NEWMAT_LIBRARY
+  NAMES newmat
+  PATHS /usr/lib /usr/local/lib
+)
+
+include(FindPackageHandleStandardArgs)
+find_package_handle_standard_args(Newmat DEFAULT_MSG
+  NEWMAT_LIBRARY NEWMAT_INCLUDE_DIR
+)
+
+if(NEWMAT_FOUND)
+  set(NEWMAT_LIBRARIES ${NEWMAT_LIBRARY})
+  set(NEWMAT_INCLUDE_DIRS ${NEWMAT_INCLUDE_DIR})
+endif()
+
+mark_as_advanced(NEWMAT_INCLUDE_DIR NEWMAT_LIBRARY)

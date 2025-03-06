@@ -5,7 +5,7 @@ int main(int argc, char** argv)
   ros::init(argc, argv, "front_end");
   ros::NodeHandle nh("~");
 
-  smat::RimgFrontEnd front_end(nh);
+  s2mat::RimgFrontEnd front_end(nh);
 
   front_end.subscribePointcloud();
 

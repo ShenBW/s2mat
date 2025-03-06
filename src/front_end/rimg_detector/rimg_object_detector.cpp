@@ -1,6 +1,6 @@
 #include "front_end/rimg_detector/rimg_object_detector.h"
 
-namespace smat
+namespace s2mat
 {
 RimgObjectDetector::RimgObjectDetector(ros::NodeHandle nh) : nh_(nh)
 {
@@ -313,4 +313,4 @@ void RimgObjectDetector::detectNoPredictions(const PointCloudPtr& static_map, co
 
   proposal_bbox_pub_.publish(bbox_msg);
 }
-}  // namespace smat
+}  // namespace s2mat

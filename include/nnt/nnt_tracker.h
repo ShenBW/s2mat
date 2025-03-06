@@ -9,7 +9,7 @@
 
 #include <boost/circular_buffer.hpp>
 
-#include <smat/TrackedObjects.h>
+#include <s2mat/TrackedObjects.h>
 #include <jsk_recognition_msgs/BoundingBoxArray.h>
 
 #include <std_msgs/Float32.h>
@@ -36,11 +36,11 @@ public:
   /// reads parameters using the provided privateNodeHandle.
   NNTracker(ros::NodeHandle& nodeHandle);
 
-  smat::TrackedObjects track(jsk_recognition_msgs::BoundingBoxArray clusters_msg);
+  s2mat::TrackedObjects track(jsk_recognition_msgs::BoundingBoxArray clusters_msg);
 
 private:
   /// Publishes tracks on ROS after completion of a tracking cycle.
-  smat::TrackedObjects publishTracks(ros::Time currentRosTime, const Tracks& tracks);
+  s2mat::TrackedObjects publishTracks(ros::Time currentRosTime, const Tracks& tracks);
 
   // Publishes statistics, such as average processing cycle duration and processing rate.
   // void publishStatistics(ros::Time currentRosTime, const unsigned int numberTracks);

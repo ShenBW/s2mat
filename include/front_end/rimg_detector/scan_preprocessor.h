@@ -34,7 +34,7 @@ POINT_CLOUD_REGISTER_POINT_STRUCT(VelodynePointType,
                                   (float, x, x)(float, y, y)(float, z, z)(float, intensity, intensity)(std::uint16_t,
                                                                                                        ring, ring))
 
-namespace smat
+namespace s2mat
 {
 class ScanPreprocessor
 {
@@ -65,7 +65,6 @@ public:
 
   void convertVelodyneToNormal(const VelodynePointCloudPtr& lidar_pointcloud, const PointCloudPtr& pointcloud);
 
-  int omp_cores_;
   int lidar_type_;
   int lidar_lines_;
   int lidar_hresolution_;
@@ -77,6 +76,6 @@ public:
 
   bool is_ring_available_;
 };
-}  // namespace smat
+}  // namespace s2mat
 
 #endif

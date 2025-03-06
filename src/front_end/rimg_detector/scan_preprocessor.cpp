@@ -1,6 +1,6 @@
 #include "front_end/rimg_detector/scan_preprocessor.h"
 
-namespace smat
+namespace s2mat
 {
 ScanPreprocessor::ScanPreprocessor()
 {
@@ -24,7 +24,6 @@ void ScanPreprocessor::noringHandle(const sensor_msgs::PointCloud2ConstPtr& poin
   }
   else
   {
-#pragma omp parallel for num_threads(omp_cores)
     for (int i = 0; i < raw_scan_local->points.size(); i++)
     {
       PointType point = raw_scan_local->points[i];
@@ -50,7 +49,6 @@ void ScanPreprocessor::ousterHandle(const sensor_msgs::PointCloud2ConstPtr& poin
   }
   else
   {
-#pragma omp parallel for num_threads(omp_cores)
     for (int i = 0; i < raw_scan_local->points.size(); i++)
     {
       OusterPointType point = raw_scan_local->points[i];
@@ -76,7 +74,6 @@ void ScanPreprocessor::velodyneHandle(const sensor_msgs::PointCloud2ConstPtr& po
   }
   else
   {
-#pragma omp parallel for num_threads(omp_cores)
     for (int i = 0; i < raw_scan_local->points.size(); i++)
     {
       VelodynePointType point = raw_scan_local->points[i];
@@ -102,8 +99,6 @@ void ScanPreprocessor::noringPointCloudToRangeImg(const PointCloudPtr& pointclou
       cv::Mat(row_size, col_size, CV_32SC1, cv::Scalar::all(-1));  // int matrix, save point (of global map) index
   // points to range img
   int num_points = pointcloud->points.size();
-
-#pragma omp parallel for num_threads(omp_cores)
 
   for (int idx = 0; idx < num_points; ++idx)
   {
@@ -166,8 +161,6 @@ void ScanPreprocessor::ousterPointCloudToRangeImg(const OusterPointCloudPtr& poi
   // points to range img
   int num_points = pointcloud->points.size();
 
-#pragma omp parallel for num_threads(omp_cores)
-
   for (int idx = 0; idx < num_points; ++idx)
   {
     OusterPointType ousterpoint = pointcloud->points[idx];
@@ -226,8 +219,6 @@ void ScanPreprocessor::velodynePointCloudToRangeImg(const VelodynePointCloudPtr&
 
   // points to range img
   int num_points = pointcloud->points.size();
-
-#pragma omp parallel for num_threads(omp_cores)
 
   for (int idx = 0; idx < num_points; ++idx)
   {
@@ -295,7 +286,6 @@ void ScanPreprocessor::process(const sensor_msgs::PointCloud2ConstPtr& pointclou
 
         ousterPointCloudToRangeImg(scan_lidar, { lidar_lines_, lidar_hresolution_ }, scan_rimgs_pair);
 
-#pragma omp parallel for num_threads(omp_cores)
         for (int i = 0; i < scan_lidar->points.size(); i++)
         {
           PointType point;
@@ -314,7 +304,6 @@ void ScanPreprocessor::process(const sensor_msgs::PointCloud2ConstPtr& pointclou
 
         velodynePointCloudToRangeImg(scan_lidar, { lidar_lines_, lidar_hresolution_ }, scan_rimgs_pair);
 
-#pragma omp parallel for num_threads(omp_cores_)
         for (int i = 0; i < scan_lidar->points.size(); i++)
         {
           PointType point;
@@ -346,8 +335,6 @@ void ScanPreprocessor::kittiPointCloudToRangeImg(const PointCloudPtr& pointcloud
       cv::Mat(row_size, col_size, CV_32SC1, cv::Scalar::all(-1));  // int matrix, save point (of global map) index
   // points to range img
   int num_points = pointcloud->points.size();
-
-#pragma omp parallel for num_threads(omp_cores)
 
   for (int idx = 0; idx < num_points; ++idx)
   {
@@ -421,7 +408,6 @@ void ScanPreprocessor::kittiPointCloudToRangeImg(const PointCloudPtr& pointcloud
 void ScanPreprocessor::convertVelodyneToNormal(const VelodynePointCloudPtr& lidar_pointcloud,
                                                const PointCloudPtr& pointcloud)
 {
-#pragma omp parallel for num_threads(omp_cores)
   for (int i = 0; i < lidar_pointcloud->points.size(); i++)
   {
     PointType point;
@@ -431,4 +417,4 @@ void ScanPreprocessor::convertVelodyneToNormal(const VelodynePointCloudPtr& lida
     pointcloud->points.push_back(point);
   }
 }
-}  // namespace smat
+}  // namespace s2mat

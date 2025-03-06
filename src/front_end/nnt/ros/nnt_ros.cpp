@@ -24,7 +24,7 @@ ROSInterface::ROSInterface(ros::NodeHandle& nodeHandle)
   // m_trackedPersonsPublisher.finalizeSetup();
 
   m_trackedPersonsPublisher =
-      m_nodeHandle.advertise<smat::TrackedObjects>("/spencer/perception/tracked_persons", queue_size);
+      m_nodeHandle.advertise<s2mat::TrackedObjects>("/spencer/perception/tracked_persons", queue_size);
 
   // Forward prediction time for track center to take latencies into account
   m_forwardPredictTime =
@@ -87,14 +87,14 @@ void ROSInterface::incomingObservations(const jsk_recognition_msgs::BoundingBoxA
 
 void ROSInterface::publishTracks(ros::Time currentRosTime, const Tracks& tracks)
 {
-  smat::TrackedObjects trackedPersons;
+  s2mat::TrackedObjects trackedPersons;
   trackedPersons.header.stamp = currentRosTime;
   trackedPersons.header.seq = m_tracker->getCurrentCycleNo();
   trackedPersons.header.frame_id = m_geometryUtils.getWorldFrame();
 
   foreach (Track::Ptr track, tracks)
   {
-    smat::TrackedObject trackedPerson;
+    s2mat::TrackedObject trackedPerson;
 
     trackedPerson.track_id = track->id;
     trackedPerson.age = ros::Duration(currentRosTime.toSec() - track->createdAt);

@@ -1,6 +1,6 @@
 #include "back_end/back_end.h"
 
-namespace smat
+namespace s2mat
 {
 ScanToMapBackEnd::ScanToMapBackEnd(ros::NodeHandle nh)
   : nh_(nh), query_flag_(false), downsampling_flag_(true), max_nearest_size_(60)
@@ -12,11 +12,11 @@ ScanToMapBackEnd::ScanToMapBackEnd(ros::NodeHandle nh)
 
   readParameters();
 
-  submap_pub_ = nh_.advertise<smat::Submap>("/static_submap", 1);
+  submap_pub_ = nh_.advertise<s2mat::Submap>("/static_submap", 1);
   static_submap_pub_ = nh_.advertise<sensor_msgs::PointCloud2>("static_submap", 1);
   dynamic_submap_pub_ = nh_.advertise<sensor_msgs::PointCloud2>("dynamic_submap", 1);
 
-  preprocess_scan_sub_ = nh_.subscribe<smat::Submap>("/preprocess_scan", 1, &ScanToMapBackEnd::scanCallback, this);
+  preprocess_scan_sub_ = nh_.subscribe<s2mat::Submap>("/preprocess_scan", 1, &ScanToMapBackEnd::scanCallback, this);
   query_sub_ =
       nh_.subscribe<geometry_msgs::PointStamped>("/clicked_point", 1, &ScanToMapBackEnd::queryScanCallback, this);
 }
@@ -39,7 +39,7 @@ bool ScanToMapBackEnd::readParameters()
   return true;
 }
 
-void ScanToMapBackEnd::scanCallback(const smat::Submap::ConstPtr& msg)
+void ScanToMapBackEnd::scanCallback(const s2mat::Submap::ConstPtr& msg)
 {
   double start_time = ros::Time::now().toSec();
 
@@ -122,7 +122,7 @@ void ScanToMapBackEnd::pubSubmap(const PointCloudPtr& static_map, const PointTyp
   sensor_msgs::PointCloud2 pointcloud_msg;
   pcl::toROSMsg(*static_map, pointcloud_msg);
 
-  smat::Submap map_msg;
+  s2mat::Submap map_msg;
   map_msg.pointcloud = pointcloud_msg;
   map_msg.pose.position.x = point.x;
   map_msg.pose.position.y = point.y;
@@ -189,4 +189,4 @@ void ScanToMapBackEnd::run()
     loop.sleep();
   }
 }
-}  // namespace smat
+}  // namespace s2mat

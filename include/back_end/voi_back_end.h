@@ -3,7 +3,7 @@
 
 #include "back_end/back_end.h"
 
-namespace smat
+namespace s2mat
 {
 class VoiBackEnd : public ScanToMapBackEnd
 {
@@ -35,6 +35,6 @@ private:
 
   bool use_rimg_;
 };
-}  // namespace smat
+}  // namespace s2mat
 
 #endif

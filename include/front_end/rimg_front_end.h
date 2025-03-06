@@ -15,7 +15,7 @@
 
 #include <visualization_msgs/MarkerArray.h>
 
-namespace smat
+namespace s2mat
 {
 class RimgFrontEnd
 {
@@ -114,7 +114,6 @@ protected:
   std::mutex deque_lock_;
   std::mutex update_lock_;
 
-  int omp_cores_;
   int scans_count_;
   int scan_frequency_;
   int max_num_;
@@ -139,6 +138,6 @@ protected:
     { 216. / 255., 191. / 255., 216. / 255. }, { 208. / 255., 32. / 255., 144. / 255. }
   };
 };
-}  // namespace smat
+}  // namespace s2mat
 
 #endif

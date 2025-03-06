@@ -3,7 +3,7 @@
 
 #include "utils.h"
 
-namespace smat
+namespace s2mat
 {
 class ScanToMapBackEnd
 {
@@ -14,7 +14,7 @@ public:
 
   bool readParameters();
 
-  void scanCallback(const smat::Submap::ConstPtr& msg);
+  void scanCallback(const s2mat::Submap::ConstPtr& msg);
 
   void queryScanCallback(const geometry_msgs::PointStampedConstPtr& point_msg);
 
@@ -66,6 +66,6 @@ protected:
   std::vector<double> scans_yaw_;
   std::vector<PointCloudPtr> scans_pointcloud_;
 };
-}  // namespace smat
+}  // namespace s2mat
 
 #endif

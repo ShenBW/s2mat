@@ -5,7 +5,7 @@ int main(int argc, char** argv)
   ros::init(argc, argv, "back_end");
   ros::NodeHandle nh("~");
 
-  smat::VoiBackEnd back_end(nh);
+  s2mat::VoiBackEnd back_end(nh);
 
   // ros::spin();
   back_end.run();

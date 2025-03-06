@@ -14,7 +14,7 @@
 #include <geometry_msgs/Point.h>
 #include <geometry_msgs/PointStamped.h>
 #include <geometry_msgs/TransformStamped.h>
-#include <smat/Submap.h>
+#include <s2mat/Submap.h>
 #include <jsk_recognition_msgs/BoundingBoxArray.h>
 
 #include <pcl/common/common.h>
@@ -200,6 +200,6 @@ extern bool point_cmp(PointType a, PointType b);
 extern bool isPointInVFOV(const SphericalPoint& sph_point, float vfov_upper, float vfov_lower);
 
 extern cv::Mat pointcloudToRimg(const PointCloudPtr& pointcloud, std::pair<int, int> image_size, float vfov_upper,
-                                float vfov_lower, float hfov, int omp_cores);
+                                float vfov_lower, float hfov);
 
 #endif

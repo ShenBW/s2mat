@@ -1,6 +1,6 @@
 #include "back_end/voi_back_end.h"
 
-namespace smat
+namespace s2mat
 {
 VoiBackEnd::VoiBackEnd(ros::NodeHandle nh) : ScanToMapBackEnd(nh)
 {
@@ -71,7 +71,7 @@ bool VoiBackEnd::isObservedByScan(const PointType& point, const geometry_msgs::P
 
 int VoiBackEnd::getObservedNum(const PointType& point, const std::vector<geometry_msgs::Pose>& scans_pose,
                                const std::vector<cv::Mat>& ref_rimgs)
-{  // namespace smatbserved_num = 0;
+{  // bserved_num = 0;
   int observed_num = 0;
   for (int i = 0; i < scans_pose.size(); ++i)
   {
@@ -99,7 +99,7 @@ cv::Mat VoiBackEnd::pointcloudToRimg(const PointCloudPtr& pointcloud)
 
   int num_points = pointcloud->points.size();
 
-#pragma omp parallel for num_threads(omp_cores_)
+// #pragma omp parallel for num_threads(omp_cores_)
   for (int idx = 0; idx < num_points; ++idx)
   {
     PointType point = pointcloud->points[idx];
@@ -162,8 +162,6 @@ void VoiBackEnd::occupancyEstimation(const PointType& curr_point, const PointClo
   std::unordered_map<struct Cell, std::unordered_set<int>, hash_cell> cell_map;
   for (int i = 0; i < scans_size; i++)
   {
-#pragma omp parallel for num_threads(omp_cores_)
-
     for (int j = 0; j < scans[i]->points.size(); j++)
     {
       PointType point = scans[i]->points[j];
@@ -188,9 +186,16 @@ void VoiBackEnd::occupancyEstimation(const PointType& curr_point, const PointClo
   static_global_map->clear();
   dynamic_global_map->clear();
 
-#pragma omp parallel for num_threads(omp_cores_)
+  static_global_map->reserve(downsampled_pointcloud->points.size());
+  dynamic_global_map->reserve(downsampled_pointcloud->points.size());
+
+  std::vector<std::vector<PointType>> static_points(omp_cores_);
+  std::vector<std::vector<PointType>> dynamic_points(omp_cores_);
+
+  #pragma omp parallel for num_threads(omp_cores_)
   for (int i = 0; i < downsampled_pointcloud->points.size(); i++)
   {
+    const int thread_id = omp_get_thread_num();
     PointType point;
     point.x = downsampled_pointcloud->points[i].x;
     point.y = downsampled_pointcloud->points[i].y;
@@ -206,12 +211,22 @@ void VoiBackEnd::occupancyEstimation(const PointType& curr_point, const PointClo
 
     if (occupancy >= 0.30)
     {
-      static_global_map->push_back(point);
+        static_points[thread_id].push_back(point);
     }
     else
     {
-      dynamic_global_map->push_back(point);
+        dynamic_points[thread_id].push_back(point);
     }
+  }
+
+  for (int i = 0; i < omp_cores_; ++i)
+  {
+    static_global_map->insert(static_global_map->end(), 
+                            static_points[i].begin(), 
+                            static_points[i].end());
+    dynamic_global_map->insert(dynamic_global_map->end(), 
+                             dynamic_points[i].begin(), 
+                             dynamic_points[i].end());
   }
 
   // pcl::transformPointCloud(*static_global_map_at_pose, *static_global_map, poseToMatrix(nearest_scan_pose));
@@ -225,4 +240,4 @@ void VoiBackEnd::occupancyEstimation(const PointType& curr_point, const PointClo
 
   ROS_INFO_STREAM("[integrate]: process time: " << ros::Time::now().toSec() - start_time);
 }
-}  // namespace smat
+}  // namespace s2mat

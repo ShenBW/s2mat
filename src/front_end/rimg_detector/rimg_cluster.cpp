@@ -1,6 +1,6 @@
 #include "front_end/rimg_detector/rimg_cluster.h"
 
-namespace smat
+namespace s2mat
 {
 RimgCluster::RimgCluster() : consider_max_depth_(true)
 {
@@ -61,7 +61,6 @@ void RimgCluster::removeGround(const PointCloudPtr& pointcloud)
 
   // Error point removal
   pcl::PointCloud<PointType>::iterator index = pointcloud_sorted->points.begin();
-#pragma omp parallel for num_threads(omp_cores)
   for (int i = 0; i < pointcloud_sorted->points.size(); i++)
   {
     if (pointcloud_sorted->points[i].z < (-sensor_height_ - 0.6))
@@ -94,7 +93,6 @@ void RimgCluster::removeGround(const PointCloudPtr& pointcloud)
 
     // pointcloud to matrix
     Eigen::MatrixXf points(pointcloud->points.size(), 3);
-#pragma omp parallel for num_threads(omp_cores_)
     for (int j = 0; j < pointcloud->points.size(); j++)
     {
       auto point = pointcloud->points[j];
@@ -104,7 +102,6 @@ void RimgCluster::removeGround(const PointCloudPtr& pointcloud)
     // ground plane model
     Eigen::VectorXf result = points * normal;
     // threshold filter
-#pragma omp parallel for num_threads(omp_cores_)
     for (int row = 0; row < result.rows(); row++)
     {
       if (result[row] < th_dist_d)
@@ -378,4 +375,4 @@ void RimgCluster::clusterPointcloud(const PointCloudPtr& pointcloud, const std::
     clusters.emplace(label_val, pointcloud_clustered);
   }
 }
-}  // namespace smat
+}  // namespace s2mat

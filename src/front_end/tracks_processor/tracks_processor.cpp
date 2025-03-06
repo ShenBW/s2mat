@@ -1,6 +1,6 @@
 #include "front_end/tracks_processor/tracks_processor.h"
 
-namespace smat
+namespace s2mat
 {
 TracksProcessor::TracksProcessor()
 {
@@ -165,4 +165,4 @@ void TracksProcessor::measureTracks(const std::vector<PointCloudPtr>& submaps,
     }
   }
 }
-}  // namespace smat
+}  // namespace s2mat

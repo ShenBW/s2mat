@@ -5,7 +5,7 @@
 #include "front_end/rimg_detector/rimg_cluster.h"
 #include "rectangular_lsap/rectangular_lsap.h"
 
-namespace smat
+namespace s2mat
 {
 class RimgObjectDetector
 {
@@ -57,5 +57,5 @@ public:
   float voxel_size_;
 };
 
-}  // namespace smat
+}  // namespace s2mat
 #endif

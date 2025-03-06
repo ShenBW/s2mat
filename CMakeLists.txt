@@ -1,10 +1,12 @@
 cmake_minimum_required(VERSION 2.8)
-project(smat)
+project(s2mat)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
 
 set(CMAKE_CXX_STANDARD 14)
+
+cmake_policy(SET CMP0015 NEW)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -37,7 +39,13 @@ find_package(PCL REQUIRED QUIET)
 find_package(OpenCV REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(octomap REQUIRED)
-find_package(Newmat)
+find_package(OpenMP REQUIRED)
+# find_package(Newmat REQUIRED)
+
+# 添加 OpenMP 编译标志
+if(OpenMP_CXX_FOUND)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+endif()
 
 include_directories(${Eigen3_INCLUDE_DIRS})
 
@@ -139,7 +147,7 @@ generate_messages(
 catkin_package(
     INCLUDE_DIRS include
     DEPENDS PCL
-#  LIBRARIES smat
+#  LIBRARIES s2mat
 #  CATKIN_DEPENDS other_catkin_pkg
 #  DEPENDS system_lib
 )
@@ -156,7 +164,6 @@ include_directories(
     ${PCL_INCLUDE_DIRS}
     ${OpenCV_INCLUDE_DIRS}
     ${OCTOMAP_INCLUDE_DIRS}
-    ${NEWMAT_INCLUDE_DIRS}
 )
 
 # link directories
@@ -206,15 +213,15 @@ add_library(map_merger_library
 )
 
 target_link_libraries(rimg_based_front_end_library
-    ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${OpenCV_LIBRARY}
+    ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${OpenCV_LIBRARY} OpenMP::OpenMP_CXX
 )
 
 target_link_libraries(back_end_library
-    ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${OpenCV_LIBRARY} ${OCTOMAP_LIBRARIES}
+    ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${OpenCV_LIBRARY} ${OCTOMAP_LIBRARIES} OpenMP::OpenMP_CXX
 )
 
 target_link_libraries(map_merger_library
-  ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${OpenCV_LIBRARY}
+  ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${OpenCV_LIBRARY} OpenMP::OpenMP_CXX
 )
 
 MESSAGE("OpenCV_LIBS: " ${OpenCV_INCLUDE_DIRS})
@@ -295,7 +302,7 @@ target_link_libraries(map_merger_node map_merger_library)
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_smat.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_s2mat.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()

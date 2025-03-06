@@ -3,7 +3,7 @@
 
 #include "utils.h"
 
-namespace smat
+namespace s2mat
 {
 typedef std::pair<PointCloudPtr, geometry_msgs::Pose> MapPosePair;
 typedef std::pair<Eigen::Vector3f, int> RunningMean;
@@ -17,11 +17,11 @@ public:
 
   void readParameters();
 
-  void staticScanCallback(const smat::Submap::ConstPtr& scan_msg);
+  void staticScanCallback(const s2mat::Submap::ConstPtr& scan_msg);
 
   void getGlobalScanPos(const PointType& scan_pos);
 
-  void staticSubmapCallback(const smat::Submap::ConstPtr& submap_msg);
+  void staticSubmapCallback(const s2mat::Submap::ConstPtr& submap_msg);
 
   void run();
 
@@ -76,7 +76,6 @@ private:
   int scans_count_;
   int curr_scans_num_;
   int curr_submap_id_;
-  int omp_cores_;
 
   float merge_dist_;
   float local_radius_;
@@ -87,6 +86,6 @@ private:
 
   bool output_local_;
 };
-}  // namespace smat
+}  // namespace s2mat
 
 #endif
